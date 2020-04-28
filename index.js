@@ -1,14 +1,16 @@
-var app = require('express')();
-var http = require('http').createServer(app);
+const express = require('express');
+const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 8080;
+const path = require('path');
+const app = express();
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-  });
-  
-  io.on('connection', (socket) => {
-    console.log('a user connected');
-  });
 
-http.listen(3000, () => {
-  console.log('listening on *:3000');
+
+app.use(bodyParser.json());
+app.use(express.static(`${__dirname}/../react-client/dist`));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(`${__dirname}/../react-client/dist/index.html`));
+});
+app.listen(PORT, () => {
+  console.log(`listening on port ${PORT}!`);
 });

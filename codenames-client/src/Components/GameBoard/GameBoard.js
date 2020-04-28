@@ -2,6 +2,7 @@ import React from 'react'
 import {Row, Col,  Card, Container} from 'react-bootstrap'
 import Sentencer from 'sentencer';
 import GameCard from '../Card/GameCard'
+import Swal from 'sweetalert2';
 
 
 const colors = ['red',
@@ -50,6 +51,30 @@ export default class GameBoard extends React.Component{
 
 
   async  componentDidMount(){
+
+    let timerInterval
+    Swal.fire({
+      title: 'Your game board is loading!',
+      timer: 2000,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading()
+        timerInterval = setInterval(() => {
+          const content = Swal.getContent()
+          if (content) {
+            const b = content.querySelector('b')
+            if (b) {
+              b.textContent = Swal.getTimerLeft()
+            }
+          }
+        }, 100)
+      },
+      onClose: () => {
+        clearInterval(timerInterval)
+      }
+    }).then( async (result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
         var cards = [];
         var cardColors = await this.shuffle(colors);
         for (var i = 0; i< 24; i++){
@@ -60,7 +85,18 @@ export default class GameBoard extends React.Component{
             }
             cards.push(card)
         }
-        this.setState({cardsArray: cards});
+        
+        Swal.fire(
+            'Done!',
+            'Your Game Board is Loaded; Enjoy your game!',
+            'success'
+          ).then((res) =>{
+            this.setState({cardsArray: cards});
+          })
+      }
+    })
+
+        
     }
     
    // Load the Data Cards after the Response has been recieved 

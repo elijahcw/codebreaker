@@ -36,9 +36,9 @@ export default class GameCard extends React.Component{
             bg={variant.toLowerCase()}
             text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
             onClick ={ () => this.handleClick()} 
-            style={{width:'200px', height:'75px', padding: '5%', marginBottom: '5%'}}>
+            style={{width:'200px', height:'100px', padding: '5%', marginBottom: '5%'}}>
                 <Card.Body>
-                    <Card.Text style ={{textAlign:'center'}}>{this.state.word}</Card.Text>
+                    <Card.Text style ={{textAlign:'center', fontSize:'150%'}}>{this.state.word}</Card.Text>
                 </Card.Body>
             </Card>
         )

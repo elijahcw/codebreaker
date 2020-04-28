@@ -5,7 +5,9 @@ import {
   Route,
   Link
 } from "react-router-dom";
-
+import {Navbar, Nav, NavDropdown, Form, Button, FormControl} from 'react-bootstrap';
+import Home from './Components/Home/Home';
+import About from './Components/About/About';
 
 import GameBoard from './Components/GameBoard/GameBoard';
 
@@ -22,17 +24,21 @@ export default function App() {
   return (
     <Router>
       <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
+        <Navbar bg="dark" expand="lg" style={{color: 'white'}}>
+          <Navbar.Brand style={{color: 'white'}} href={window.location.origin}>CodeBreaker</Navbar.Brand>
+          <Navbar.Toggle style={{color: 'white'}} aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse style={{color: 'white'}} id="basic-navbar-nav">
+            <Nav className="mr-auto" >
+              <Nav.Link style={{color: 'white'}} href={window.location.origin}  >Home</Nav.Link>
+              <Nav.Link style={{color: 'white'}} href="about">Instructions</Nav.Link>
+              <Nav.Link style={{color: 'white'}} href="dashboard">Get Started!</Nav.Link>
+            </Nav>
+            <Form inline>
+              <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+              <Button variant="outline-success">Search</Button>
+            </Form>
+          </Navbar.Collapse>
+        </Navbar>
 
         <hr />
 
@@ -44,8 +50,8 @@ export default function App() {
           of them to render at a time
         */}
         <Switch>
-          <Route exact path="/">
-            <Home />
+          <Route exact path="/" >
+            <Home/>
           </Route>
           <Route path="/about">
             <About />
@@ -60,29 +66,5 @@ export default function App() {
   );
 }
 
-// You can think of these components as "pages"
-// in your app.
 
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-}
 
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
-  );
-}
