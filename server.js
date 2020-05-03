@@ -9,7 +9,6 @@ const io = require('socket.io')(http); // socket.io instance initialization
 
 
 // --------------------Socket IO--------------------------------
-var clients = 0;
 
 // listen on the connection event for incoming sockets
 io.on('connection', function(socket){
@@ -43,12 +42,12 @@ io.on('connection', function(socket){
 
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'qmonitorclient/build')));
+app.use(express.static(path.join(__dirname, 'codenames-client/build')));
 
 
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname+'/qmonitorclient/build/index.html'));
+    res.sendFile(path.join(__dirname+'/codenames-client/build/index.html'));
 });
 
 

@@ -27,7 +27,7 @@ state={
   checkForActiveGame(){
     if(this.state.redirect === true && this.state.activeGame !== ''){
       return(
-        <Redirect to={'/board/' + this.state.activeGame} host={true} />
+        <Redirect to={'/board/' + this.state.activeGame + '?host=true'} />
       )
     }
   }

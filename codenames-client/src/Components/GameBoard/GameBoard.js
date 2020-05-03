@@ -5,7 +5,7 @@ import GameCard from '../Card/GameCard'
 import Swal from 'sweetalert2';
 import io from 'socket.io-client';
 // Initiate Socket IO Client
-const socket = io();
+// const socket = io('http://localhost:5000');
 const colors = ['red',
                 'red',
                 'red',
@@ -36,7 +36,8 @@ export default class GameBoard extends React.Component{
 
     state={
         cardsArray: [],
-        host: false
+        host: false,
+        showClue: false
     }
 
 // Array Shuffle Function
@@ -53,7 +54,7 @@ export default class GameBoard extends React.Component{
 
 // Page Loading Method
   async  componentDidMount(){
-
+    
     let timerInterval
     Swal.fire({
       title: 'Your game board is loading!',
@@ -78,14 +79,16 @@ export default class GameBoard extends React.Component{
       /* Read more about handling dismissals below */
       if (result.dismiss === Swal.DismissReason.timer) {
         var cards = [];
-        var cardColors = await this.shuffle(colors);
-        for (var i = 0; i< 24; i++){
-            var card = {
-                word: Sentencer.make("{{ noun }}").toString(),
-                color: cardColors[i].toString(),
-                active: false,
-            }
-            cards.push(card)
+        if(this.props.location.search === '?host=true'){
+          var cardColors = await this.shuffle(colors);
+          for (var i = 0; i< 24; i++){
+              var card = {
+                  word: Sentencer.make("{{ noun }}").toString(),
+                  color: cardColors[i].toString(),
+                  active: false,
+              }
+              cards.push(card)
+          }
         }
         this.loadSession()
         Swal.fire(
@@ -107,7 +110,7 @@ export default class GameBoard extends React.Component{
 loadSession(){
   const sessionId = this.props.match.params.boardId;
   this.setState({activeSession: sessionId})
-  socket.emit('startSession')
+  // socket.emit('startSession')
   
 }
 
@@ -139,11 +142,28 @@ async postChat(){
 
 }
 
+// Clue Alerts
+clueAlert(message) {
+  if (this.state.showClue) {
+    return (
+      <Alert variant="success" onClose={() => this.setState({showClue: false})} dismissible>
+        <Alert.Heading>Clue</Alert.Heading>
+        <p>
+          {message}
+        </p>
+      </Alert>
+    );
+  }
+}
+
+
+// Main Render Method
 render() {
 
 return (  
     <>
-    <Button></Button>
+
+    <Button style={{margin:'2%'}} variant='success' onClick={() => this.postChat()}>Post a Clue</Button>
     <Container fluid>
         <Row>
             {this.loadDataCards()}
