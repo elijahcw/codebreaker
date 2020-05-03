@@ -1,11 +1,13 @@
 import React from 'react'
-import {Row, Col, Container, Button} from 'react-bootstrap'
+import {Row, Col, Container, Button, Alert} from 'react-bootstrap'
 import Sentencer from 'sentencer';
 import GameCard from '../Card/GameCard'
 import Swal from 'sweetalert2';
 import io from 'socket.io-client';
-// Initiate Socket IO Client
-// const socket = io('http://localhost:5000');
+
+// Create Socket.Io connection
+const socket = io('http://localhost:5000');
+
 const colors = ['red',
                 'red',
                 'red',
@@ -37,8 +39,13 @@ export default class GameBoard extends React.Component{
     state={
         cardsArray: [],
         host: false,
-        showClue: false
+        showClue: false,
+        clueMessage: '',
+        showClue: false,
+        activeGame: false
     }
+
+    
 
 // Array Shuffle Function
     shuffle(array) {
@@ -52,9 +59,31 @@ export default class GameBoard extends React.Component{
         return array
       }
 
+
+// Establish Event Listeners
+startListeners(){
+  if(this.state.host === false){
+    
+  }
+
+  socket.on('message', function(msg){
+    this.setState({clueMessage: msg});
+    this.setState({showClue: true});
+  });
+
+  socket.on('cardReveal', function(cards){
+    this.setState({cardsArray: cards})
+  });
+
+}
+
+
+
 // Page Loading Method
   async  componentDidMount(){
-    
+     if(this.props.location.search === '?host=true'){
+        this.setState({host: true})
+     }
     let timerInterval
     Swal.fire({
       title: 'Your game board is loading!',
@@ -125,7 +154,7 @@ loadDataCards(){
     )
 }
 
-
+// Post The Chat to Other Clients
 async postChat(){
   const { value: text } = await Swal.fire({
     input: 'textarea',
@@ -137,24 +166,38 @@ async postChat(){
   })
   
   if (text) {
-    Swal.fire(text)
+    socket.emit('message',{message: text})
+    this.setState({clueMessage: text})
+    this.setState({showClue: true})
   }
 
 }
 
 // Clue Alerts
-clueAlert(message) {
+clueAlert() {
   if (this.state.showClue) {
     return (
       <Alert variant="success" onClose={() => this.setState({showClue: false})} dismissible>
         <Alert.Heading>Clue</Alert.Heading>
         <p>
-          {message}
+          {this.state.clueMessage}
         </p>
       </Alert>
     );
   }
 }
+
+// Start a new game
+startGame(){
+if(this.state.activeGame){
+  return(
+    <Button style={{fontSize:'150%'}}
+    onClick={()=>{socket.emit('cardReveal',{cards: this.state.cardsArray})}}
+    >Start Game!</Button>
+  )
+}
+}
+
 
 
 // Main Render Method
@@ -162,9 +205,14 @@ render() {
 
 return (  
     <>
-
+    
     <Button style={{margin:'2%'}} variant='success' onClick={() => this.postChat()}>Post a Clue</Button>
     <Container fluid>
+        <Row>
+          <Col>
+            {this.clueAlert()}
+          </Col>
+        </Row>
         <Row>
             {this.loadDataCards()}
         </Row>

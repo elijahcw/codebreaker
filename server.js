@@ -12,7 +12,7 @@ const io = require('socket.io')(http); // socket.io instance initialization
 
 // listen on the connection event for incoming sockets
 io.on('connection', function(socket){
- let sessionID;
+ var sessionID;
  console.log('A user connected');
  clients ++ ;  
     
@@ -27,6 +27,11 @@ io.on('connection', function(socket){
     // Session Post
       socket.on('message', function(message){
       socket.to(sessionID).broadcast.emit('message',message)
+    })
+
+    // Session Post
+    socket.on('cardReveal', function(cards){
+      socket.to(sessionID).broadcast.emit('cardReveal',cards)
     })
 
     
