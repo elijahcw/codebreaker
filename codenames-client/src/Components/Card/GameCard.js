@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card} from 'react-bootstrap';
-
+import '../GameBoard/GameBoard.css'
 
 
 export default class GameCard extends React.Component{
@@ -23,20 +23,21 @@ export default class GameCard extends React.Component{
                 variant = 'Primary';
             } else if(this.state.color === 'red') {
                 variant = 'Danger';
-            } else if (this.state.color == 'blank') {
+            } else if (this.state.color === 'blank') {
                 variant = 'Warning';
-            } else if (this.state.color == 'black') {
+            } else if (this.state.color === 'black') {
                 variant = 'Dark'
             }
         } 
         
         // Main Render Method
         return(
-            <Card
+            <Card className="gameCard"
             bg={variant.toLowerCase()}
             text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-            onClick ={ () => this.handleClick()} 
-            style={{width:'200px', height:'100px', padding: '5%', marginBottom: '5%'}}>
+            onClick ={ () => this.handleClick()}
+            style={{width:'250px', height:'100%', padding: '5%'}} 
+            >
                 <Card.Body>
                     <Card.Text style ={{textAlign:'center', fontSize:'150%'}}>{this.state.word}</Card.Text>
                 </Card.Body>

@@ -1,7 +1,6 @@
 import React from 'react';
-import {Button, Jumbotron, Image} from 'react-bootstrap';
+import {Jumbotron} from 'react-bootstrap';
 
-const banner = require('../../Media/heroBanner.jpg');
 
 export default class Home extends React.Component{
 

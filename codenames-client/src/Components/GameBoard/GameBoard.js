@@ -1,10 +1,11 @@
 import React from 'react'
-import {Row, Col,  Card, Container} from 'react-bootstrap'
+import {Row, Col, Container, Button} from 'react-bootstrap'
 import Sentencer from 'sentencer';
 import GameCard from '../Card/GameCard'
 import Swal from 'sweetalert2';
-
-
+import io from 'socket.io-client';
+// Initiate Socket IO Client
+const socket = io();
 const colors = ['red',
                 'red',
                 'red',
@@ -34,10 +35,11 @@ const colors = ['red',
 export default class GameBoard extends React.Component{
 
     state={
-        cardsArray: []
+        cardsArray: [],
+        host: false
     }
 
-
+// Array Shuffle Function
     shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
@@ -49,7 +51,7 @@ export default class GameBoard extends React.Component{
         return array
       }
 
-
+// Page Loading Method
   async  componentDidMount(){
 
     let timerInterval
@@ -85,7 +87,7 @@ export default class GameBoard extends React.Component{
             }
             cards.push(card)
         }
-        
+        this.loadSession()
         Swal.fire(
             'Done!',
             'Your Game Board is Loaded; Enjoy your game!',
@@ -98,8 +100,18 @@ export default class GameBoard extends React.Component{
 
         
     }
+   
     
-   // Load the Data Cards after the Response has been recieved 
+
+// Load Session ID Parameters
+loadSession(){
+  const sessionId = this.props.match.params.boardId;
+  this.setState({activeSession: sessionId})
+  socket.emit('startSession')
+  
+}
+
+// Load the Data Cards after the Response has been recieved 
 loadDataCards(){
     return(
         this.state.cardsArray.map((card,i)=> {
@@ -110,10 +122,28 @@ loadDataCards(){
     )
 }
 
+
+async postChat(){
+  const { value: text } = await Swal.fire({
+    input: 'textarea',
+    inputPlaceholder: 'Type your clue here...',
+    inputAttributes: {
+      'aria-label': 'Type your clue message here'
+    },
+    showCancelButton: true
+  })
+  
+  if (text) {
+    Swal.fire(text)
+  }
+
+}
+
 render() {
 
 return (  
     <>
+    <Button></Button>
     <Container fluid>
         <Row>
             {this.loadDataCards()}
