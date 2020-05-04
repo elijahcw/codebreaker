@@ -41,7 +41,8 @@ export default class GameBoard extends React.Component{
         showClue: false,
         clueMessage: '',
         showClue: false,
-        activeGame: false
+        activeGame: false,
+        activeSession: ''
     }
 
     
@@ -158,7 +159,7 @@ socket.emit('cardReveal', {cards: cardList});
 gameCard(card) {
   var variant;
   // Set Card Color
-  if(card.active) {
+  if(card.active || this.props.location.search === '?reveal=true') {
       if(card.color === 'blue'){
           variant = 'Primary';
       } else if(card.color === 'red') {
@@ -244,6 +245,10 @@ render() {
 return (  
     <>
     <Button style={{margin:'2%'}} variant='success' onClick={() => this.postChat()}>Post a Clue</Button>
+    <div style={{margin:'2%', float:'left'}}>Share the following links with your friends to get started:
+      <p>Clue Masters: {window.location.origin + '/' + this.state.activeSession +'?reveal=true'}</p>
+      <p>Other Team Members/Opponents: {window.location.origin + '/' + this.state.activeSession}</p>
+    </div>
     <Container fluid>
         <Row>
           <Col>
