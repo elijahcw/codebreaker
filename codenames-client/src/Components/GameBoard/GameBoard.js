@@ -144,13 +144,29 @@ loadSession(){
   socket.emit('Session Start', {session: this.props.match.params.boardId});
 }
 
+updateAndReveal(i) {
+ var card = {
+   word: this.state.cardsArray[i].word,
+   color: this.state.cardsArray[i].color,
+   active: true
+ }
+// Generate the Cards Array and modify before sending over to other clients
+ var cardList = this.state.cardsArray;
+ let index = i -1;
+// Splice the new card value into the array
+cardList.splice(index, 1, card); 
+socket.emit('cardReveal', {card: cardList});
+}
+
+
+
 // Load the Data Cards after the Response has been recieved 
 loadDataCards(){
   if(this.state.cardsArray.length !== 0 ){
     return(
         this.state.cardsArray.map((card,i)=> {
           return <Col md={3}  key={i} className='cardList'
-                    onClick={() => {socket.emit('cardReveal', {cards: this.state.cardsArray});}}>
+                    onClick={() => this.updateAndReveal(i)}>
                     <GameCard card = {card} />
                 </Col>;
         })
