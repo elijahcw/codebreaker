@@ -178,6 +178,7 @@ loadDataCards(){
 
 // Post The Chat to Other Clients
 async postChat(){
+  console.log(this.state.cardsArray)
   const { value: text } = await Swal.fire({
     input: 'textarea',
     inputPlaceholder: 'Type your clue here...',
