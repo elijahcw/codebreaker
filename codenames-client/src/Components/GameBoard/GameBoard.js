@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import io from 'socket.io-client';
 
 // Create Socket.Io connection
-const socket = io('http://localhost:5000');
+const socket = io();
 
 const colors = ['red',
                 'red',
