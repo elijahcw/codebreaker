@@ -152,10 +152,11 @@ updateAndReveal(i) {
  }
 // Generate the Cards Array and modify before sending over to other clients
  var cardList = this.state.cardsArray;
- let index = i -1;
+ let index = i;
 // Splice the new card value into the array
 cardList.splice(index, 1, card); 
-socket.emit('cardReveal', {card: cardList});
+console.log(cardList)
+socket.emit('cardReveal', {cards: cardList});
 }
 
 

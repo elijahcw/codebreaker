@@ -31,7 +31,7 @@ io.on('connection', function(socket){
 
     // Session Post
     socket.on('cardReveal', function(cards){
-      console.log(cards.cards)
+      // console.log(cards.cards)
       socket.to(sessionID).broadcast.emit('cardReveal', {cards: cards.cards})
     })
 
