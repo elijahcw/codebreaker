@@ -5,7 +5,7 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http); // socket.io instance initialization
  
-
+var clients = 0;
 
 
 // --------------------Socket IO--------------------------------
@@ -20,7 +20,7 @@ io.on('connection', function(socket){
     socket.on('Session Start', function(session){ 
       sessionID = session.session.toString();
       socket.join(sessionID) 
-      socket.to(sessionID).emit('stream', "Session Initiated");
+      socket.to(sessionID).emit('newClient', "A new Client Joined!");
       console.log('This Session ID is: ' + sessionID);
     });
 

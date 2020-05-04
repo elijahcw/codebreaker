@@ -60,25 +60,13 @@ export default class GameBoard extends React.Component{
       }
 
 
-// Establish Event Listeners
-startListeners(){
- 
-  socket.on('message', function(msg){
-    this.setState({clueMessage: msg});
-    this.setState({showClue: true});
-  });
-
-  socket.on('cardReveal', function(cards){
-    this.setState({cardsArray: cards})
-  });
-
-}
 
 
 
 // Page Loading Method
   async  componentDidMount(){
-    socket.emit('Session Start', {session: this.props.match.params.boardId})
+ 
+    
      if(this.props.location.search === '?host=true'){
         this.setState({host: true})
      }
@@ -116,18 +104,35 @@ startListeners(){
               }
               cards.push(card)
           }
-        }
-        this.loadSession()
+          this.setState({cardsArray: cards});
+        }   
         Swal.fire(
             'Done!',
             'Your Game Board is Loaded; Enjoy your game!',
             'success'
           ).then((res) =>{
-            this.setState({cardsArray: cards});
+            this.loadSession();
           })
       }
     })
 
+
+    socket.on('newClient',(msg) =>{
+      console.log(msg);
+      socket.emit('cardReveal', {cards: this.state.cardsArray})
+    })
+  
+    socket.on('message', (msg) => {
+      console.log(msg)
+      this.setState({clueMessage: msg.msg});
+      this.setState({showClue: true});
+    });
+  
+    socket.on('cardReveal', (cards) =>{
+      console.log('Cards Reveal!')
+      console.log(cards.cards)
+      this.setState({cardsArray: cards.cards})
+    });
         
     }
    
@@ -136,21 +141,24 @@ startListeners(){
 // Load Session ID Parameters
 loadSession(){
   const sessionId = this.props.match.params.boardId;
-  this.setState({activeSession: sessionId})
-  // socket.emit('startSession')
-  
+  this.setState({activeSession: sessionId});
+  socket.emit('Session Start', {session: this.props.match.params.boardId});
 }
 
 // Load the Data Cards after the Response has been recieved 
 loadDataCards(){
+  if(this.state.cardsArray.length !== 0 ){
     return(
         this.state.cardsArray.map((card,i)=> {
-          return <Col md={3}  key={i} className='cardList'>
+          return <Col md={3}  key={i} className='cardList'
+                    onClick={() => {socket.emit('cardReveal', {cards: this.state.cardsArray})}}>
                     <GameCard card = {card} />
                 </Col>;
         })
     )
+  }
 }
+
 
 // Post The Chat to Other Clients
 async postChat(){
@@ -185,16 +193,7 @@ clueAlert() {
   }
 }
 
-// Start a new game
-startGame(){
-if(this.state.activeGame){
-  return(
-    <Button style={{fontSize:'150%'}}
-    onClick={()=>{socket.emit('cardReveal',{cards: this.state.cardsArray})}}
-    >Start Game!</Button>
-  )
-}
-}
+
 
 
 
@@ -203,7 +202,6 @@ render() {
 
 return (  
     <>
-    
     <Button style={{margin:'2%'}} variant='success' onClick={() => this.postChat()}>Post a Clue</Button>
     <Container fluid>
         <Row>

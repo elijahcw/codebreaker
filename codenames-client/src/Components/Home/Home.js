@@ -40,14 +40,26 @@ state={
       
       if (session) {
         this.setState({activeGame:session});
-        this.setState({redirect: true});
+        this.setState({joinRedirect: true})
       }
   }
 
-    render() {
+joinRedirect(){
+  if(this.state.joinRedirect){
+    return(
+      <Redirect to={'/board/' + this.state.activeGame} />
+    )
+  }
+}
+
+
+
+
+render() {
         return(
             <>
             {this.checkForActiveGame()}
+            {this.joinRedirect()}
             <Jumbotron style={jumboTronStyle}>
                
                 <h1>Crack the Clues!</h1>
