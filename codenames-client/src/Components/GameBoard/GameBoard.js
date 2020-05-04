@@ -245,11 +245,13 @@ render() {
 return (  
     <>
     <Button style={{margin:'2%'}} variant='success' onClick={() => this.postChat()}>Post a Clue</Button>
-    <div style={{margin:'2%', float:'left'}}>Share the following links with your friends to get started:
-      <p>Clue Masters: {window.location.origin + '/' + this.state.activeSession +'?reveal=true'}</p>
-      <p>Other Team Members/Opponents: {window.location.origin + '/' + this.state.activeSession}</p>
-    </div>
+    <Button style={{float:'right', margin:'2%'}} href={window.location.origin + '/board/' + this.state.activeSession + '?reveal=true'} variant='danger'>Clue Master</Button>
     <Container fluid>
+        <Row>
+          <p style={{margin:'2%'}}>Share the following links with your friends to get started: 
+            <Button href={window.location.origin + '/board/' + this.state.activeSession} variant='link'>{window.location.origin + '/board/' + this.state.activeSession}</Button>
+          </p>  
+        </Row>
         <Row>
           <Col>
             {this.clueAlert()}
