@@ -65,8 +65,7 @@ export default class GameBoard extends React.Component{
 
 // Page Loading Method
   async  componentDidMount(){
- 
-    
+
      if(this.props.location.search === '?host=true'){
         this.setState({host: true})
      }
@@ -124,7 +123,7 @@ export default class GameBoard extends React.Component{
   
     socket.on('message', (msg) => {
       console.log(msg)
-      this.setState({clueMessage: msg.msg});
+      this.setState({clueMessage: msg.message});
       this.setState({showClue: true});
     });
   
@@ -151,7 +150,7 @@ loadDataCards(){
     return(
         this.state.cardsArray.map((card,i)=> {
           return <Col md={3}  key={i} className='cardList'
-                    onClick={() => {socket.emit('cardReveal', {cards: this.state.cardsArray})}}>
+                    onClick={() => {socket.emit('cardReveal', {cards: this.state.cardsArray});}}>
                     <GameCard card = {card} />
                 </Col>;
         })
