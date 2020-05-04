@@ -62,10 +62,7 @@ export default class GameBoard extends React.Component{
 
 // Establish Event Listeners
 startListeners(){
-  if(this.state.host === false){
-    
-  }
-
+ 
   socket.on('message', function(msg){
     this.setState({clueMessage: msg});
     this.setState({showClue: true});
@@ -81,6 +78,7 @@ startListeners(){
 
 // Page Loading Method
   async  componentDidMount(){
+    socket.emit('Session Start', {session: this.props.match.params.boardId})
      if(this.props.location.search === '?host=true'){
         this.setState({host: true})
      }
