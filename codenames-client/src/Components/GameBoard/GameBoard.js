@@ -1,7 +1,6 @@
 import React from 'react'
-import {Row, Col, Container, Button, Alert} from 'react-bootstrap'
+import {Row, Col, Container, Button, Alert, Card} from 'react-bootstrap'
 import Sentencer from 'sentencer';
-import GameCard from '../Card/GameCard'
 import Swal from 'sweetalert2';
 import io from 'socket.io-client';
 
@@ -117,20 +116,17 @@ export default class GameBoard extends React.Component{
 
 
     socket.on('newClient',(msg) =>{
-      console.log(msg);
       socket.emit('cardReveal', {cards: this.state.cardsArray})
     })
   
     socket.on('message', (msg) => {
-      console.log(msg)
       this.setState({clueMessage: msg.message});
       this.setState({showClue: true});
     });
   
     socket.on('cardReveal', (cards) =>{
-      console.log('Cards Reveal!')
-      console.log(cards.cards)
       this.setState({cardsArray: cards.cards})
+      this.setState({ state: this.state });
     });
         
     }
@@ -154,21 +150,49 @@ updateAndReveal(i) {
  var cardList = this.state.cardsArray;
  let index = i;
 // Splice the new card value into the array
-cardList.splice(index, 1, card); 
-console.log(cardList)
+cardList.splice(index, 1, card);
+this.setState({cardsArray: cardList});
 socket.emit('cardReveal', {cards: cardList});
 }
 
-
+gameCard(card) {
+  var variant;
+  // Set Card Color
+  if(card.active) {
+      if(card.color === 'blue'){
+          variant = 'Primary';
+      } else if(card.color === 'red') {
+          variant = 'Danger';
+      } else if (card.color === 'blank') {
+          variant = 'Warning';
+      } else if (card.color === 'black') {
+          variant = 'Dark'
+      }
+  } else {
+    variant = 'Light'
+  }
+  
+  // Main Render Method
+  return(
+      <Card className="gameCard"
+      bg={variant.toLowerCase()}
+      text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
+      style={{width:'250px', height:'100%', padding: '5%'}} 
+      >
+          <Card.Body>
+              <Card.Text style ={{textAlign:'center', fontSize:'150%'}}>{card.word}</Card.Text>
+          </Card.Body>
+      </Card>
+  )}
 
 // Load the Data Cards after the Response has been recieved 
 loadDataCards(){
   if(this.state.cardsArray.length !== 0 ){
     return(
         this.state.cardsArray.map((card,i)=> {
-          return <Col md={3}  key={i} className='cardList'
+          return <Col md={3}  key={card.word} className='cardList'
                     onClick={() => this.updateAndReveal(i)}>
-                    <GameCard card = {card} />
+                    {this.gameCard(card)}
                 </Col>;
         })
     )
