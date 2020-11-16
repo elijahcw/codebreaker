@@ -94,14 +94,21 @@ export default class GameBoard extends React.Component{
       if (result.dismiss === Swal.DismissReason.timer) {
         var cards = [];
         if(this.props.location.search === '?host=true'){
+          var wordsArray = [];
           var cardColors = await this.shuffle(colors);
           for (var i = 0; i< 24; i++){
-              var card = {
-                  word: Sentencer.make("{{ noun }}").toString(),
-                  color: cardColors[i].toString(),
-                  active: false,
-              }
-              cards.push(card)
+            let genWord;
+            do {
+              genWord = Sentencer.make("{{ noun }}").toString()
+            }
+            while (wordsArray.indexOf(genWord) >= 0);
+            wordsArray.push(genWord);
+            var card = {
+                word: genWord,
+                color: cardColors[i].toString(),
+                active: false,
+            }
+            cards.push(card)
           }
           this.setState({cardsArray: cards});
         }   
