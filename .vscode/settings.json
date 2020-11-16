@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/2be24565-d263-4c09-a97c-cdd56f22e198/resourceGroups/codebreaker-dev/providers/Microsoft.Web/sites/codebreaker-dev",
+    "appService.deploySubpath": "."
+}
