@@ -142,24 +142,26 @@ loadSession(){
 }
 
 updateAndReveal(i) {
- var card = {
-   word: this.state.cardsArray[i].word,
-   color: this.state.cardsArray[i].color,
-   active: true
- }
-// Generate the Cards Array and modify before sending over to other clients
- var cardList = this.state.cardsArray;
- let index = i;
-// Splice the new card value into the array
-cardList.splice(index, 1, card);
-this.setState({cardsArray: cardList});
-socket.emit('cardReveal', {cards: cardList});
+if(this.props.location.search !== '?reveal=true'){
+  var card = {
+    word: this.state.cardsArray[i].word,
+    color: this.state.cardsArray[i].color,
+    active: true
+  }
+ // Generate the Cards Array and modify before sending over to other clients
+  var cardList = this.state.cardsArray;
+  let index = i;
+ // Splice the new card value into the array
+ cardList.splice(index, 1, card);
+ this.setState({cardsArray: cardList});
+ socket.emit('cardReveal', {cards: cardList});
+}
 }
 
 gameCard(card) {
   var variant;
   // Set Card Color
-  if(card.active || this.props.location.search === '?reveal=true') {
+  if(card.active || (this.props.location.search === '?reveal=true' && !card.active)) {
       if(card.color === 'blue'){
           variant = 'Primary';
       } else if(card.color === 'red') {
