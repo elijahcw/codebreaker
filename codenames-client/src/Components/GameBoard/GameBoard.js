@@ -161,7 +161,8 @@ if(this.props.location.search !== '?reveal=true'){
 gameCard(card) {
   var variant;
   // Set Card Color
-  if(card.active || (this.props.location.search === '?reveal=true' && !card.active)) {
+  var isClueMaster = this.props.location.search === '?reveal=true';
+  if((card.active && !isClueMaster) || (isClueMaster && !card.active)) {
       if(card.color === 'blue'){
           variant = 'Primary';
       } else if(card.color === 'red') {
