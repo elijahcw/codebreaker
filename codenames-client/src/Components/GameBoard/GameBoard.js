@@ -1,9 +1,9 @@
 import React from 'react'
 import {Row, Col, Container, Button, Alert, Card} from 'react-bootstrap'
-// import Sentencer from 'sentencer';
-import { generate } from "random-words";
 import Swal from 'sweetalert2';
 import io from 'socket.io-client';
+
+const {one} = require('nouns');
 
 // Create Socket.Io connection
 const socket = io();
@@ -41,7 +41,6 @@ export default class GameBoard extends React.Component{
         host: false,
         showClue: false,
         clueMessage: '',
-        showClue: false,
         activeGame: false,
         activeSession: ''
     }
@@ -88,7 +87,7 @@ export default class GameBoard extends React.Component{
         for (var i = 0; i< 24; i++){
           let genWord;
           do {
-            genWord = generate().toString()
+            genWord = one().toString()
           }
           while (wordsArray.indexOf(genWord) >= 0);
           wordsArray.push(genWord);
@@ -259,6 +258,8 @@ return (
             {this.loadDataCards()}
         </Row>
     </Container>
+    <br/>
+    <br/>
     </>
 )
 }
