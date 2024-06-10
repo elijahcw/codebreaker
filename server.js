@@ -2,8 +2,12 @@ const port = process.env.PORT || 3000;
 const express = require('express')
 const path = require('path')
 const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http); // socket.io instance initialization
+const {createServer} = require('http');
+const {Server} = require('socket.io');
+const server = createServer(app);
+const io = new Server(server);
+
+
  
 var clients = 0;
 
@@ -13,7 +17,6 @@ var clients = 0;
 // listen on the connection event for incoming sockets
 io.on('connection', function(socket){
  var sessionID;
- console.log('A user connected');
  clients ++ ;  
     
     // Session Start
@@ -26,13 +29,13 @@ io.on('connection', function(socket){
 
     // Session Post
       socket.on('message', function(message){
-      socket.to(sessionID).broadcast.emit('message',message)
+      socket.to(sessionID).emit('message',message)
     })
 
     // Session Post
     socket.on('cardReveal', function(cards){
-      // console.log(cards.cards)
-      socket.to(sessionID).broadcast.emit('cardReveal', {cards: cards.cards})
+      console.log(cards)
+      socket.to(sessionID).emit('cardReveal', {cards: cards.cards})
     })
 
     
@@ -43,8 +46,6 @@ io.on('connection', function(socket){
     });
   
   });
-
-
 
 
 // Serve the static files from the React app
@@ -58,6 +59,6 @@ app.get('*', (req,res) =>{
 
 
 
-http.listen(port, function(){
+server.listen(port, function(){
     console.log('Signaler listening on *: ', port);
    });

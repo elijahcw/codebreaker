@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button, Jumbotron} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import {Redirect}  from 'react-router-dom';
 import Swal from 'sweetalert2';
-import uuid from 'react-uuid';
+import {v4 as uuid} from 'uuid';
 
 
 
@@ -60,7 +60,7 @@ render() {
             <>
             {this.checkForActiveGame()}
             {this.joinRedirect()}
-            <Jumbotron style={jumboTronStyle}>
+            <div class="jumbotron" style={{"backgroundImage": 'url(../../Media/heroBanner.jpg)'}}>
                
                 <h1>Crack the Clues!</h1>
                 <p style={{marginTop: '2%'}}>
@@ -72,16 +72,9 @@ render() {
                     <Button style={{float: 'right'}} variant="secondary" onClick={()=> this.joinAGame()}>Join an Existing Session</Button>
                 </p>
                 
-            </Jumbotron>
+            </div>
             </>
             
         )
     }
 }
-
-
-const jumboTronStyle = {margin:'5%',
-                  marginBottom:'10%',
-                  height: '400px' ,
-                  backgroundImage: 'url(../../Media/heroBanner.jpg)'
-                }

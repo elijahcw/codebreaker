@@ -1,6 +1,7 @@
 import React from 'react'
 import {Row, Col, Container, Button, Alert, Card} from 'react-bootstrap'
-import Sentencer from 'sentencer';
+// import Sentencer from 'sentencer';
+import { generate } from "random-words";
 import Swal from 'sweetalert2';
 import io from 'socket.io-client';
 
@@ -69,61 +70,49 @@ export default class GameBoard extends React.Component{
      if(this.props.location.search === '?host=true'){
         this.setState({host: true})
      }
-    let timerInterval
-    Swal.fire({
-      title: 'Your game board is loading!',
-      timer: 2000,
-      timerProgressBar: true,
-      onBeforeOpen: () => {
-        Swal.showLoading()
-        timerInterval = setInterval(() => {
-          const content = Swal.getContent()
-          if (content) {
-            const b = content.querySelector('b')
-            if (b) {
-              b.textContent = Swal.getTimerLeft()
-            }
+     let timerInterval;
+     Swal.fire({
+       title: "Your Game board is loading",
+       html: "Loading the cards for your game and connecting you to the others...",
+       timer: 2000,
+       timerProgressBar: true,
+       willClose: () => {
+         clearInterval(timerInterval);
+       }
+     }).then( async (result) => {
+      // Here were will populate the initial cards array with 24 random words and colors for the host.
+      var cards = [];
+      if(this.props.location.search === '?host=true'){
+        var wordsArray = [];
+        var cardColors = await this.shuffle(colors);
+        for (var i = 0; i< 24; i++){
+          let genWord;
+          do {
+            genWord = generate().toString()
           }
-        }, 100)
-      },
-      onClose: () => {
-        clearInterval(timerInterval)
-      }
-    }).then( async (result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        var cards = [];
-        if(this.props.location.search === '?host=true'){
-          var wordsArray = [];
-          var cardColors = await this.shuffle(colors);
-          for (var i = 0; i< 24; i++){
-            let genWord;
-            do {
-              genWord = Sentencer.make("{{ noun }}").toString()
-            }
-            while (wordsArray.indexOf(genWord) >= 0);
-            wordsArray.push(genWord);
-            var card = {
-                word: genWord,
-                color: cardColors[i].toString(),
-                active: false,
-            }
-            cards.push(card)
+          while (wordsArray.indexOf(genWord) >= 0);
+          wordsArray.push(genWord);
+          var card = {
+              word: genWord,
+              color: cardColors[i].toString(),
+              active: false,
           }
-          this.setState({cardsArray: cards});
-        }   
-        Swal.fire(
-            'Done!',
-            'Your Game Board is Loaded; Enjoy your game!',
-            'success'
-          ).then((res) =>{
-            this.loadSession();
-          })
-      }
+          cards.push(card)
+        }
+        this.setState({cardsArray: cards});
+      }  
+      Swal.fire(
+        'Done!',
+        'Your Game Board is Loaded; Enjoy your game!',
+        'success'
+      ).then((res) =>{
+        this.loadSession();
+      })
     })
 
 
     socket.on('newClient',(msg) =>{
+      console.log(msg);
       socket.emit('cardReveal', {cards: this.state.cardsArray})
     })
   
@@ -145,6 +134,7 @@ export default class GameBoard extends React.Component{
 loadSession(){
   const sessionId = this.props.match.params.boardId;
   this.setState({activeSession: sessionId});
+  console.log("Joining Session ID: " + sessionId);
   socket.emit('Session Start', {session: this.props.match.params.boardId});
 }
 

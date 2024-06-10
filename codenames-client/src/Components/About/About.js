@@ -1,5 +1,4 @@
 import React from 'react';
-import {Jumbotron} from 'react-bootstrap';
 
 
 export default class Home extends React.Component{
@@ -8,7 +7,7 @@ export default class Home extends React.Component{
 
     render() {
         return(
-            <Jumbotron style={jumboTronStyle}>
+            <div class="jumbotron" style={{"backgroundImage": 'url(../../Media/heroBanner.jpg)'}}>
                
                 <h1>Crack the Clues!</h1>
                 <p>
@@ -42,14 +41,8 @@ export default class Home extends React.Component{
 
                 The game ends when all of one team's agents are identified (winning the game for that team), or when one team has identified the eight-ball (losing the game).
                 </p>
-            </Jumbotron>
+            </div>
             
         )
     }
 }
-
-
-const jumboTronStyle = {margin:'5%',
-                  marginBottom:'10%',
-                  backgroundImage: 'url(../../Media/heroBanner.jpg)'
-                }
