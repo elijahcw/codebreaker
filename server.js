@@ -34,7 +34,6 @@ io.on('connection', function(socket){
 
     // Session Post
     socket.on('cardReveal', function(cards){
-      console.log(cards)
       socket.to(sessionID).emit('cardReveal', {cards: cards.cards})
     })
 

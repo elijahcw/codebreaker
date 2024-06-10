@@ -18,7 +18,6 @@ state={
   // Starts a new game and redirects the user
   startNewGame(){
     var guid = uuid().toString();
-    console.log(guid);
     this.setState({activeGame: guid})
     this.setState({redirect: true})
   }
